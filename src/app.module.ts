@@ -20,9 +20,8 @@ import { User } from './users/entities/user/user';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User], // Ensure the entity class is included here
+        entities: [User],
         synchronize: true,
-        logging: true,
       }),
     }),
     UsersModule,
