@@ -22,7 +22,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ default: 'free' })
+  @Column({ default: 'user' })
   role: string;
 
   @CreateDateColumn()

@@ -5,7 +5,6 @@ import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcryptjs';
 import { Logger } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { User } from 'src/users/entities/user/user';
 import { classToPlain } from 'class-transformer';
 
 @Injectable()
