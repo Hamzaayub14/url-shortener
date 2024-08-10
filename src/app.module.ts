@@ -7,6 +7,7 @@ import { User } from './users/entities/user/user';
 import { UrlModule } from './url/url.module';
 import { Url } from './url/entity/url.entity';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { UrlAnalytics } from './analytics/entity/analytics.entity';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, Url],
+        entities: [User, Url,UrlAnalytics],
         synchronize: true,
       }),
     }),

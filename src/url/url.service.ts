@@ -2,12 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Url } from './entity/url.entity';
+import { AnalyticsService } from '../analytics/analytics.service';
 
 @Injectable()
 export class UrlService {
   constructor(
     @InjectRepository(Url)
-    private urlRepository: Repository<Url>,
+    private readonly urlRepository: Repository<Url>,
+    private readonly analyticsService: AnalyticsService,
   ) {}
 
   async create(originalUrl: string): Promise<Url> {
@@ -28,5 +30,17 @@ export class UrlService {
       throw new NotFoundException('Short URL not found');
     }
     return url;
+  }
+
+  async logVisit(
+    shortCode: string,
+    referrer: string,
+    ipAddress: string,
+    userAgent: string,
+    deviceType: string,
+    location: string,
+  ): Promise<void> {
+    const url = await this.findOneByShortCode(shortCode);
+    await this.analyticsService.logVisit(url, referrer, ipAddress, userAgent, deviceType, location);
   }
 }
