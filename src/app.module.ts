@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './users/entities/user/user';
 import { UrlModule } from './url/url.module';
 import { Url } from './url/entity/url.entity';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { Url } from './url/entity/url.entity';
     UsersModule,
     AuthModule,
     UrlModule,
+    AnalyticsModule,
   ],
   controllers: [],
   providers: [],
