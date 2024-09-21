@@ -1,5 +1,14 @@
-import { Controller, Post, Body, Get, Param, Res, NotFoundException } from '@nestjs/common';
-import { Response } from 'express';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Res,
+  NotFoundException,
+  Req,
+} from '@nestjs/common';
+import { Response, Request } from 'express';
 import { UrlService } from './url.service';
 import { AnalyticsService } from '../analytics/analytics.service';
 
@@ -17,10 +26,27 @@ export class UrlController {
   }
 
   @Get(':shortCode')
-  async redirect(@Param('shortCode') shortCode: string, @Res() res: Response) {
+  async redirect(
+    @Param('shortCode') shortCode: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     try {
       const url = await this.urlService.findOneByShortCode(shortCode);
-      await this.urlService.logVisit(shortCode, 'referrer-example', 'ip-address-example', 'user-agent-example', 'device-type-example', 'location-example');
+
+      const ipAddress = req.ip || 'Unknown';
+      const referrer = req.headers['referer'] || 'Direct';
+      const userAgent = req.headers['user-agent'] || 'Unknown';
+      const deviceType = this.urlService.determineDeviceType(userAgent);
+
+      await this.analyticsService.logVisit(
+        shortCode,
+        referrer,
+        ipAddress,
+        userAgent,
+        deviceType,
+      );
+
       return res.redirect(url.originalUrl);
     } catch (error) {
       throw new NotFoundException('Short URL not found');

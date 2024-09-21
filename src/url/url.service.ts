@@ -32,15 +32,13 @@ export class UrlService {
     return url;
   }
 
-  async logVisit(
-    shortCode: string,
-    referrer: string,
-    ipAddress: string,
-    userAgent: string,
-    deviceType: string,
-    location: string,
-  ): Promise<void> {
-    const url = await this.findOneByShortCode(shortCode);
-    await this.analyticsService.logVisit(url, referrer, ipAddress, userAgent, deviceType, location);
+  determineDeviceType(userAgent: string): string {
+    if (/mobile/i.test(userAgent)) {
+      return 'Mobile';
+    } else if (/tablet/i.test(userAgent)) {
+      return 'Tablet';
+    } else {
+      return 'Desktop';
+    }
   }
 }

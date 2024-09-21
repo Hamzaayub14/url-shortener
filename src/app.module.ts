@@ -8,12 +8,14 @@ import { UrlModule } from './url/url.module';
 import { Url } from './url/entity/url.entity';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { UrlAnalytics } from './analytics/entity/analytics.entity';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -24,7 +26,7 @@ import { UrlAnalytics } from './analytics/entity/analytics.entity';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, Url,UrlAnalytics],
+        entities: [User, Url, UrlAnalytics],
         synchronize: true,
       }),
     }),
@@ -36,4 +38,11 @@ import { UrlAnalytics } from './analytics/entity/analytics.entity';
   controllers: [],
   providers: [],
 })
+export class AppModule implements NestModule {
+  constructor(private readonly passportConfig: PassportConfig) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    this.passportConfig.configure(consumer);
+  }
+}
 export class AppModule {}
