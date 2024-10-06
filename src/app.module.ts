@@ -9,13 +9,14 @@ import { Url } from './url/entity/url.entity';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { UrlAnalytics } from './analytics/entity/analytics.entity';
 import { PassportModule } from '@nestjs/passport';
+import { GoogleStrategy } from './auth/strategies/google.strategy';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    PassportModule.register({ session: true }),
+    PassportModule.register({ session: true }), // Enable session support
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -36,13 +37,6 @@ import { PassportModule } from '@nestjs/passport';
     AnalyticsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [GoogleStrategy],
 })
-export class AppModule implements NestModule {
-  constructor(private readonly passportConfig: PassportConfig) {}
-
-  configure(consumer: MiddlewareConsumer) {
-    this.passportConfig.configure(consumer);
-  }
-}
 export class AppModule {}

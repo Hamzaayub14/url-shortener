@@ -26,7 +26,22 @@ export class UsersService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
   }
-
+  async findOneByEmail(email: string): Promise<User | undefined> {
+    try {
+      return this.usersRepository.findOne({ where: { email } });
+    } catch (error) {
+      this.logger.error(`Error finding user with email: ${email}`, error.stack);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+  }
+  async createOAuthUser(profile: any): Promise<User> {
+    const newUser = this.usersRepository.create({
+      username: profile.displayName,
+      email: profile.emails[0].value,
+      password: '',
+    });
+    return this.usersRepository.save(newUser);
+  }
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
     try {
       const newUser = this.usersRepository.create(createUserDto);
@@ -40,16 +55,12 @@ export class UsersService {
 
   async findOrCreateUser(createUserDto: CreateUserDto) {
     try {
-      // Check if the user already exists
       let user: any = await this.findOne(createUserDto.username);
 
       if (user) {
-        // User already exists, return it
         this.logger.log(`User found with username: ${createUserDto.username}`);
         return classToPlain(user) as User;
       }
-
-      // User does not exist, create and save a new user
       this.logger.log(
         `User not found. Creating new user with username: ${createUserDto.username}`,
       );

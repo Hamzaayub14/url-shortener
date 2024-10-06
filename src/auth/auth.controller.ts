@@ -31,7 +31,11 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    res.redirect('http://localhost:3000/dashboard'); // Redirect to your app's dashboard
+  async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
+    const user = req.user;
+    if (user) {
+      return res.json(user);
+    }
+    res.redirect('http://localhost:3000/dashboard');
   }
 }

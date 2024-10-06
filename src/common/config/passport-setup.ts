@@ -37,11 +37,11 @@ export class PassportConfig {
       ),
     );
 
-    passport.serializeUser((user: any, done: Function) => {
+    passport.serializeUser((user: any, done) => {
       done(null, user.id);
     });
 
-    passport.deserializeUser(async (id: number, done: Function) => {
+    passport.deserializeUser(async (id: number, done) => {
       try {
         const user = await this.userService.findById(id);
         done(null, user);
