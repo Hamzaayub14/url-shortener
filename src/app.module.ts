@@ -6,12 +6,17 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './users/entities/user/user';
 import { UrlModule } from './url/url.module';
 import { Url } from './url/entity/url.entity';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { UrlAnalytics } from './analytics/entity/analytics.entity';
+import { PassportModule } from '@nestjs/passport';
+import { GoogleStrategy } from './auth/strategies/google.strategy';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    PassportModule.register({ session: true }), // Enable session support
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -22,15 +27,16 @@ import { Url } from './url/entity/url.entity';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, Url],
+        entities: [User, Url, UrlAnalytics],
         synchronize: true,
       }),
     }),
     UsersModule,
     AuthModule,
     UrlModule,
+    AnalyticsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [GoogleStrategy],
 })
 export class AppModule {}
